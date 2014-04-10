@@ -1,0 +1,17 @@
+{
+  "name": "e-book-reader",
+  "version": "0.1.0",
+  "private": "false",
+  "dependencies": {
+    "jez": "https://github.com/Zlobin/jez.git"
+  },
+  "devDependencies": {
+    "console-polyfill": "latest",
+    "requirejs": "latest",
+    "requirejs-text": "latest",
+    "mocha": "latest",
+    "chai": "latest",
+    "sinon": "latest",
+    "sinon-chai": "latest"
+  }
+}

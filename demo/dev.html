@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>eBookReader</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="True">
+    <!-- FullScreen Mode -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Disable selected phones and adresses -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="../src/css/normalize.css">
+    <link rel="stylesheet" media="all" href="../src/css/ebookreader.css">
+
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="EBookReader"></div>
+
+    <!-- JEZ -->
+    <script src="../bower_components/jez/src/main.js"></script>
+    <!-- PolyFills -->
+    <script src="../src/js/polyfills/array.js"></script>
+    <!-- Libs -->
+    <script src="../src/js/lib/image_loader.js"></script>
+    <!-- eBookReader -->
+    <script src="../src/js/ebookreader/locale/en/us.js"></script>
+    <script src="../src/js/ebookreader/locale/ru/ru.js"></script>
+    <script src="../src/js/ebookreader/main.js"></script>
+    <script src="../src/js/ebookreader/reader.js"></script>
+    <script src="../src/js/ebookreader/image_reader/main.js"></script>
+    <script src="../src/js/ebookreader/image_reader/screen_mode/single.js"></script>
+    <script src="../src/js/ebookreader/image_reader/screen_mode/dual.js"></script>
+    <script src="../src/js/ebookreader/html_reader/main.js"></script>
+
+    <script>
+      (function(w) {
+        w.onload = function() {
+          var images = [
+            'img/page1.jpg',
+            'img/page2.jpg',
+            'img/page3.jpg',
+            'img/page4.jpg',
+            'img/page5.jpg',
+            'img/page6.jpg',
+            'img/page7.jpg'
+          ];
+
+          (new EBookReader({
+            'book_ID': 1,
+            // 'locale': 'ru-RU',
+            'images': {
+              'single': images,
+              'dual': images,
+              'print_a4': images,
+              'print_letter': images
+            }
+          }));
+        };
+      }(this));
+    </script>
+  </body>
+</html>

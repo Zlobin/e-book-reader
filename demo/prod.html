@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>eBookReader</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="True">
+    <!-- FullScreen Mode -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Disable selected phones and adresses -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <!--<link rel="stylesheet" media="all" href="../build/ebookreader.min.css">-->
+    <link rel="stylesheet" media="all" href="../build/ebookreader.css">
+
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <div id="EBookReader"></div>
+
+    <script src="../build/ebookreader.full.min.js" async></script>
+    <script>
+      (function(w) {
+        w.onload = function() {
+          var images = [
+            'img/page1.jpg',
+            'img/page2.jpg',
+            'img/page3.jpg',
+            'img/page4.jpg',
+            'img/page5.jpg',
+            'img/page6.jpg',
+            'img/page7.jpg'
+          ];
+
+          (new EBookReader({
+            'book_ID': 1,
+            // 'locale': 'ru-ru',
+            'images': {
+              'single': images,
+              'dual': images,
+              'print_a4': images,
+              'print_letter': images
+            }
+          }));
+        };
+      }(this));
+    </script>
+  </body>
+</html>

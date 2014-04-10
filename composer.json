@@ -1,0 +1,16 @@
+{
+  "name": "e-book-reader",
+  "description": "Online book reader",
+  "version": "0.1.0",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["online", "book", "reader"],
+  "homepage": "https://github.com/Zlobin/e-book-reader",
+  "authors": [{
+    "name": "Eugene Zlobin",
+    "email": "creastar@gmail.com",
+    "homepage": "http://zlobin.pro/zlobin_eng.html",
+    "role": "Developer"
+  }],
+  "license": "MIT"
+}

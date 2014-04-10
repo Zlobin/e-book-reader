@@ -1,0 +1,43 @@
+{
+  "name": "ebookreader",
+  "description": "Online book reader",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Zlobin/e-book-reader",
+  "main": "build/ebookreader.full.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zlobin/e-book-reader.git"
+  },
+  "author": {
+    "name": "Eugene Zlobin",
+    "email": "creastar@gmail.com",
+    "web": "http://zlobin.pro/zlobin_eng.html"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Zlobin/e-book-reader/issues"
+  },
+  "github": "https://github.com/Zlobin/e-book-reader",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-replace": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-line-remover": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-jslint": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-remove-logging": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-rev": "latest",
+    "grunt-open": "latest",
+    "load-grunt-tasks": "latest",
+    "time-grunt": "latest",
+    "grunt-grock": "latest"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
