@@ -30,13 +30,6 @@
         </div>
       
       
-        <div class="code"><pre class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(win, undef)</span> {</span>
-<span class="hljs-pi">  'use strict'</span>;
-
-  <span class="hljs-keyword">var</span> JEZ = win.JEZ,
-      ImageLoader;
-</pre></div>
-      
       </div>
     
       <div class="segment">
@@ -47,7 +40,10 @@
         </div>
       
       
-        <div class="code"><pre class="wrapper">  ImageLoader = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(img_src, onComplete, onError, onProgress)</span> {</span></pre></div>
+        <div class="code"><pre class="wrapper"><span class="hljs-keyword">var</span> ImageLoader = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(win, JEZ, undef)</span> {</span>
+<span class="hljs-pi">  'use strict'</span>;
+
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(img_src, onComplete, onError, onProgress)</span> {</span></pre></div>
       
       </div>
     
@@ -210,9 +206,7 @@ Or if need to load images from another domain, you should use CORS (cross-domain
       }.bind(<span class="hljs-keyword">this</span>))
     };
   };
-
-  win.ImageLoader = ImageLoader;
-}(<span class="hljs-keyword">this</span>));
+}(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>.JEZ));
 </pre></div>
       
       </div>
@@ -330,7 +324,7 @@ Or if need to load images from another domain, you should use CORS (cross-domain
  author Eugene Zlobin <a href="http://zlobin.pro/">http://zlobin.pro/</a> and version 0.1.0
 </span></p>
 <p>eBookReader
-Updated: &quot;2014-04-10T11:17:32.317Z&quot;</p>
+Updated: &quot;2014-04-21T14:44:23.117Z&quot;</p>
 </div>
         </div>
       
@@ -1322,7 +1316,7 @@ Method <strong>leafRight</strong> version 0.1.0
       
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
-Constructor version 0.1.0 and extends EBookReader.Reader
+Constructor version 0.1.1 and extends EBookReader.Reader
 </span></p>
 <p>Image Reader base.</p>
 </div>
@@ -1332,7 +1326,8 @@ Constructor version 0.1.0 and extends EBookReader.Reader
         <div class="code"><pre class="wrapper">  EBR.ImageReader = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
     EBR.Reader.call(<span class="hljs-keyword">this</span>);
     <span class="hljs-keyword">var</span> params = parameters.params,
-        storage = JEZ.storage;
+        storage = JEZ.storage,
+        opts = parameters.options;
 
     <span class="hljs-keyword">this</span>.IMAGE_TYPE_PRINT_LETTER = <span class="hljs-string">'print_letter'</span>;
     <span class="hljs-keyword">this</span>.IMAGE_TYPE_PRINT_A4 = <span class="hljs-string">'print_a4'</span>;
@@ -1344,10 +1339,11 @@ Constructor version 0.1.0 and extends EBookReader.Reader
     <span class="hljs-keyword">this</span>.sm_container = {};
     <span class="hljs-keyword">this</span>.screen_mode = {};
     <span class="hljs-keyword">this</span>.page_view = {};
+    <span class="hljs-keyword">this</span>.thumbnails = {};
     <span class="hljs-keyword">this</span>.wrapper = {};
     <span class="hljs-keyword">this</span>.toolbar = {};
 
-    __ = JEZ.__(parameters.options.locale);
+    __ = JEZ.__(opts.locale);
 
     parameters.params.hash_images_sizes = params.storage_hash + <span class="hljs-string">'images_sizes'</span>;
     parameters.params.image_sizes = storage.get(params.hash_images_sizes, <span class="hljs-literal">false</span>);
@@ -1368,6 +1364,7 @@ Constructor version 0.1.0 and extends EBookReader.Reader
         .createWrapper_()
         .initToolbar_()
         .initToolbarPagination_()
+        .createThumbnails_()
         .createPageView_()
         .createScreenModeContainer_()
         .changeScreenMode_(params.set_screen_mode)
@@ -1704,6 +1701,7 @@ Private Method <strong>initToolbarButtons_</strong> version 0.1.0
         $buttons_wrapper = JEZ.dom(buttons_wrapper),
         buttons = {
           <span class="hljs-string">'single_screen_mode'</span>: {
+            <span class="hljs-string">'enable'</span>: <span class="hljs-literal">false</span>,
             <span class="hljs-string">'title'</span>: __(<span class="hljs-string">'Single Page'</span>),
             <span class="hljs-string">'icon'</span>: <span class="hljs-string">'doc-text'</span>,
             <span class="hljs-string">'events'</span>: {
@@ -1714,6 +1712,7 @@ Private Method <strong>initToolbarButtons_</strong> version 0.1.0
             }
           },
           <span class="hljs-string">'dual_screen_mode'</span>: {
+            <span class="hljs-string">'enable'</span>: <span class="hljs-literal">false</span>,
             <span class="hljs-string">'title'</span>: __(<span class="hljs-string">'Dual Page'</span>),
             <span class="hljs-string">'icon'</span>: <span class="hljs-string">'book-open'</span>,
             <span class="hljs-string">'events'</span>: {
@@ -1731,7 +1730,7 @@ Private Method <strong>initToolbarButtons_</strong> version 0.1.0
                 event.preventDefault();
                 <span class="hljs-keyword">var</span> type = params.enable_thumbnails ? <span class="hljs-string">'off'</span> : <span class="hljs-string">'on'</span>;
 
-                data.screen_mode.thumbnails(type);
+                data.thumbnailsBlock(type);
               }
             }
           },
@@ -1855,24 +1854,26 @@ Private Method <strong>initToolbarButtons_</strong> version 0.1.0
 
     <span class="hljs-keyword">for</span> (button <span class="hljs-keyword">in</span> buttons) {
       <span class="hljs-keyword">if</span> (JEZ.hop.call(buttons, button)) {
-        current_button = JEZ.dom(<span class="hljs-string">'button'</span>).create({
-          <span class="hljs-string">'id'</span>: <span class="hljs-string">'EBR_button_'</span> + button,
-          <span class="hljs-string">'className'</span>: <span class="hljs-string">'EBR_button'</span>
-        });
+        <span class="hljs-keyword">if</span> (buttons[button].enable !== <span class="hljs-literal">false</span>) {
+          current_button = JEZ.dom(<span class="hljs-string">'button'</span>).create({
+            <span class="hljs-string">'id'</span>: <span class="hljs-string">'EBR_button_'</span> + button,
+            <span class="hljs-string">'className'</span>: <span class="hljs-string">'EBR_button'</span>
+          });
 
-        <span class="hljs-keyword">if</span> (buttons[button].icon) {
-          JEZ.dom(current_button).addClass(<span class="hljs-string">'icon-'</span> + buttons[button].icon);
+          <span class="hljs-keyword">if</span> (buttons[button].icon) {
+            JEZ.dom(current_button).addClass(<span class="hljs-string">'icon-'</span> + buttons[button].icon);
+          }
+
+          current_button.title = buttons[button].title;
+
+          <span class="hljs-keyword">if</span> (buttons[button].events !== undef) {
+            <span class="hljs-keyword">this</span>.initToolbarButtonEvents_(current_button, buttons[button].events === <span class="hljs-string">'click'</span> ?
+                JEZ.click_event() :
+                buttons[button].events);
+          }
+
+          toolbar_buttons.push(current_button);
         }
-
-        current_button.title = buttons[button].title;
-
-        <span class="hljs-keyword">if</span> (buttons[button].events !== undef) {
-          <span class="hljs-keyword">this</span>.initToolbarButtonEvents_(current_button, buttons[button].events === <span class="hljs-string">'click'</span> ?
-              JEZ.click_event() :
-              buttons[button].events);
-        }
-
-        toolbar_buttons.push(current_button);
       }
     }
 
@@ -1916,6 +1917,174 @@ Private Method <strong>initToolbarButtonEvents_</strong> version 0.1.0
         $button.on(event_name, events[event_name], <span class="hljs-keyword">this</span>);
       }
     }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  };
+</pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section doc-section-private">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Private Method <strong>thumbnailsBlock</strong> version 0.1.0
+</span></p>
+<p>ThumbnailsBlock.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>status</code> must be a String.</strong></li>
+</ul>
+<p><strong>Returns an Object</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader.thumbnailsBlock = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(status)</span> {</span>
+    status === <span class="hljs-string">'on'</span> ? <span class="hljs-keyword">this</span>.showThumbnails_() : <span class="hljs-keyword">this</span>.hideThumbnails_();
+
+    parameters.params.enable_thumbnails = !parameters.params.enable_thumbnails;
+    <span class="hljs-keyword">this</span>.updateURLHash({
+      <span class="hljs-string">'name'</span>: <span class="hljs-string">'thumbnails'</span>,
+      <span class="hljs-string">'value'</span>: parameters.params.enable_thumbnails ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>
+    }, parameters.consts.TYPE_PARTLYREPLACE);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  };
+</pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section doc-section-private">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Private Method <strong>createThumbnails_</strong> version 0.1.0
+</span></p>
+<p>Create thumbnails.</p>
+<p><strong>Returns an Object</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader.createThumbnails_ = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">this</span>.thumbnails = JEZ.dom(<span class="hljs-string">'div'</span>).create({
+      <span class="hljs-string">'className'</span>: <span class="hljs-string">'EBR_thumbnails'</span>,
+      <span class="hljs-string">'id'</span>: <span class="hljs-string">'EBR_thumbnails'</span>
+    });
+
+    JEZ.dom(<span class="hljs-keyword">this</span>.wrapper).append(<span class="hljs-keyword">this</span>.thumbnails);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  };
+</pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section doc-section-private">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Private Method <strong>showThumbnails_</strong> version 0.1.0
+</span></p>
+<p>Show thumbnails.</p>
+<p><strong>Returns an Object</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader.showThumbnails_ = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">var</span> opts = parameters.options,
+        thumbnails = opts.thumbnails_images,
+        len = thumbnails.length,
+        i,
+        thumbnail;
+
+     JEZ.dom(<span class="hljs-keyword">this</span>.thumbnails).set(<span class="hljs-string">'style'</span>, {
+      <span class="hljs-string">'display'</span>: <span class="hljs-string">'block'</span>,
+      <span class="hljs-string">'width'</span>: opts.thumbnails_width + <span class="hljs-number">30</span> + <span class="hljs-string">'px'</span>,
+      <span class="hljs-string">'height'</span>: JEZ.dom(<span class="hljs-keyword">this</span>.page_view).get(<span class="hljs-string">'style'</span>, <span class="hljs-string">'height'</span>)
+    });
+
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; len; i++) {
+      thumbnail = <span class="hljs-keyword">this</span>.addThumbnail_(thumbnails[i], i);
+      JEZ.dom(<span class="hljs-keyword">this</span>.thumbnails).append(thumbnail);
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  };
+</pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section doc-section-private">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Private Method <strong>addThumbnail_</strong> version 0.1.0
+</span></p>
+<p>Add thumbnail.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong><code>img</code> must be a String.</strong></li>
+<li><strong><code>num</code> must be a Number.</strong></li>
+</ul>
+<p><strong>Returns an Object</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader.addThumbnail_ = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(img, num)</span> {</span>
+    <span class="hljs-keyword">var</span> thumbnail_wrapper = JEZ.dom(<span class="hljs-string">'div'</span>).create({
+          <span class="hljs-string">'className'</span>: <span class="hljs-string">'EBR_thumbnails_wrapper'</span>
+        }),
+        thumbnail = JEZ.dom(<span class="hljs-string">'img'</span>).create({
+          <span class="hljs-string">'id'</span>: <span class="hljs-string">'EBRthumbnail_'</span> + num,
+          <span class="hljs-string">'className'</span>: <span class="hljs-string">'EBR_thumbnail_img'</span>,
+          <span class="hljs-string">'src'</span>: img
+        });
+
+    JEZ.dom(thumbnail)
+      .set(<span class="hljs-string">'style'</span>, {
+        <span class="hljs-string">'width'</span>: parameters.options.thumbnails_width + <span class="hljs-string">'px'</span>
+      })
+      .on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event, data)</span> {</span>
+        event.preventDefault();
+        <span class="hljs-keyword">var</span> $active = JEZ.dom(<span class="hljs-string">'.EBR_thumbnail_img.active'</span>).find();
+
+        <span class="hljs-keyword">if</span> ($active.el !== <span class="hljs-literal">null</span>) {
+          $active.removeClass(<span class="hljs-string">'active'</span>);
+        }
+
+        JEZ.dom(event.target).addClass(<span class="hljs-string">'active'</span>);
+
+        data.gotoPage(num + <span class="hljs-number">1</span>);
+      }, <span class="hljs-keyword">this</span>);
+
+    JEZ.dom(thumbnail_wrapper).append(thumbnail);
+
+    <span class="hljs-keyword">return</span> thumbnail_wrapper;
+  };
+</pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section doc-section-private">
+          <div class="wrapper"><p><span class='doc-section-header'>
+Private Method <strong>hideThumbnails_</strong> version 0.1.0
+</span></p>
+<p>Hide thumbnails.</p>
+<p><strong>Returns an Object</strong></p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader.hideThumbnails_ = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    JEZ.dom(<span class="hljs-keyword">this</span>.thumbnails).set(<span class="hljs-string">'style'</span>, {
+      <span class="hljs-string">'display'</span>: <span class="hljs-string">'none'</span>
+    });
 
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
   };
@@ -1994,17 +2163,19 @@ right arrow + top arrow = turn right</p>
       
         <div class="code"><pre class="wrapper">    JEZ.dom(doc)
         .on(<span class="hljs-string">'keydown'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event, data)</span> {</span>
+          <span class="hljs-keyword">var</span> key = JEZ.keys;
+
           <span class="hljs-keyword">switch</span> (event.keyCode) {
-            <span class="hljs-keyword">case</span> JEZ.keys.LEFT:
+            <span class="hljs-keyword">case</span> key.LEFT:
               data.previousPage();
               <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> JEZ.keys.RIGHT:
+            <span class="hljs-keyword">case</span> key.RIGHT:
               data.nextPage();
               <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> JEZ.keys.HOME:
+            <span class="hljs-keyword">case</span> key.HOME:
               data.firstPage();
               <span class="hljs-keyword">break</span>;
-            <span class="hljs-keyword">case</span> JEZ.keys.END:
+            <span class="hljs-keyword">case</span> key.END:
               data.lastPage();
               <span class="hljs-keyword">break</span>;
           }
@@ -2705,7 +2876,7 @@ Method <strong>print</strong> version 0.1.0
       
         <div class="comments doc-section doc-section-private">
           <div class="wrapper"><p><span class='doc-section-header'>
-Private Method <strong>changeScreenMode_</strong> version 0.1.0
+Private Method <strong>changeScreenMode_</strong> version 0.2.0
 </span></p>
 <p>Change screen mode.</p>
 <p>Parameters:</p>
@@ -2723,10 +2894,10 @@ Private Method <strong>changeScreenMode_</strong> version 0.1.0
     <span class="hljs-keyword">if</span> (parameters.params.current_screen_mode !== mode) {
       <span class="hljs-keyword">if</span> (mode === consts.SINGLE_MODE) {
         <span class="hljs-keyword">this</span>.screen_mode = <span class="hljs-keyword">new</span> EBR.ImageReader.ScreenMode.Single(<span class="hljs-keyword">this</span>.sm_container,
-            <span class="hljs-keyword">this</span>.page_view, <span class="hljs-keyword">this</span>.toolbar);
+            <span class="hljs-keyword">this</span>.page_view, <span class="hljs-keyword">this</span>.toolbar, <span class="hljs-keyword">this</span>.thumbnails);
       } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mode === consts.DUAL_MODE) {
         <span class="hljs-keyword">this</span>.screen_mode = <span class="hljs-keyword">new</span> EBR.ImageReader.ScreenMode.Dual(<span class="hljs-keyword">this</span>.sm_container,
-            <span class="hljs-keyword">this</span>.page_view, <span class="hljs-keyword">this</span>.toolbar);
+            <span class="hljs-keyword">this</span>.page_view, <span class="hljs-keyword">this</span>.toolbar, <span class="hljs-keyword">this</span>.thumbnails);
       } <span class="hljs-keyword">else</span> {
         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Screen Mode "'</span> + mode + <span class="hljs-string">'" does not exist'</span>);
       }
@@ -2817,7 +2988,7 @@ Private Method <strong>removeToolbarButtons_</strong> version 0.1.0
       
         <div class="comments doc-section doc-section-private">
           <div class="wrapper"><p><span class='doc-section-header'>
-Private Method <strong>addMobileFeatures</strong> version 0.1.0
+Private Method <strong>addMobileFeatures</strong> version 0.1.1
 </span></p>
 <p>Add mobile features.</p>
 <p><strong>Returns an Object</strong></p>
@@ -2830,7 +3001,7 @@ Private Method <strong>addMobileFeatures</strong> version 0.1.0
       <span class="hljs-string">'EBR_button_thumbnails'</span>,
       <span class="hljs-string">'EBR_button_zoom_out'</span>,
       <span class="hljs-string">'EBR_button_zoom_in'</span>,
-      <span class="hljs-string">'EBR_button_print'</span>
+      <span class="hljs-string">'EBR_button_fullscreen'</span>
     ]);
 </pre></div>
       
@@ -2853,7 +3024,7 @@ Private Method <strong>addMobileFeatures</strong> version 0.1.0
       
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
- see <a href="http://www.w3.org/TR/ambient-light/">http://www.w3.org/TR/ambient-light/</a>
+ link <a href="http://www.w3.org/TR/ambient-light/">http://www.w3.org/TR/ambient-light/</a>
 </span></p>
 <p>Change color depending on the light.</p>
 </div>
@@ -2872,7 +3043,7 @@ Private Method <strong>addMobileFeatures</strong> version 0.1.0
         $el.addClass(<span class="hljs-string">'bright'</span>);
       }
     }.bind(<span class="hljs-keyword">this</span>));
-    </pre></div>
+</pre></div>
       
       </div>
     
@@ -3033,7 +3204,7 @@ Method <strong>gotoPage</strong> version 0.1.0
       
         <div class="comments doc-section">
           <div class="wrapper"><p><span class='doc-section-header'>
- version 0.1.0 and extends EBookReader.Reader.ScreenMode.Single
+ version 0.2.0 and extends EBookReader.Reader.ScreenMode.Single
 </span></p>
 <p>Image reader single screen mode.</p>
 <p>Parameters:</p>
@@ -3046,10 +3217,11 @@ Method <strong>gotoPage</strong> version 0.1.0
         </div>
       
       
-        <div class="code"><pre class="wrapper">  EBR.ImageReader.ScreenMode.Single = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sm_container, page_view, toolbar)</span> {</span>
+        <div class="code"><pre class="wrapper">  EBR.ImageReader.ScreenMode.Single = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sm_container, page_view, toolbar, thumbnails)</span> {</span>
     <span class="hljs-keyword">this</span>.sm_container = sm_container;
     <span class="hljs-keyword">this</span>.page_view = page_view;
     <span class="hljs-keyword">this</span>.toolbar = toolbar;
+    <span class="hljs-keyword">this</span>.thumbnails = thumbnails;
   };
 
   JEZ.inherits(EBR.ImageReader.ScreenMode.Single, EBR.Reader.ScreenMode.Single);
@@ -3209,17 +3381,30 @@ Method <strong>scale</strong> version 0.1.0
 Method <strong>thumbnails</strong> version 0.1.0
 </span></p>
 <p>thumbnails.</p>
-<p>TODO: implement it</p>
-<p>  return this;
-}; </p>
 <p>Parameters:</p>
 <ul>
 <li><strong><code>type</code> must be a String.</strong></li>
 </ul>
-<p><strong>Returns an Object</strong><br/>(ebr_image_reader_single.thumbnails = function(type) {)</p>
+<p><strong>Returns an Object</strong></p>
 </div>
         </div>
       
+      
+        <div class="code"><pre class="wrapper">  ebr_image_reader_single.thumbnails = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(type)</span> {</span></pre></div>
+      
+      </div>
+    
+      <div class="segment">
+      
+        <div class="comments doc-section">
+          <div class="wrapper"><p>TODO: implement it</p>
+</div>
+        </div>
+      
+      
+        <div class="code"><pre class="wrapper">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  };
+</pre></div>
       
       </div>
     

@@ -19,16 +19,17 @@
    * Image reader single screen mode.
    *
    * @class
-   * @version 0.1.0
+   * @version 0.2.0
    * @extends EBookReader.Reader.ScreenMode.Single
    * @param {Object} sm_container
    * @param {Object} page_view
    * @param {Object} toolbar
    **/
-  EBR.ImageReader.ScreenMode.Single = function(sm_container, page_view, toolbar) {
+  EBR.ImageReader.ScreenMode.Single = function(sm_container, page_view, toolbar, thumbnails) {
     this.sm_container = sm_container;
     this.page_view = page_view;
     this.toolbar = toolbar;
+    this.thumbnails = thumbnails;
   };
 
   JEZ.inherits(EBR.ImageReader.ScreenMode.Single, EBR.Reader.ScreenMode.Single);
@@ -133,11 +134,11 @@
    * @param {String} type
    * @returns {Object}
    */
-  /* ebr_image_reader_single.thumbnails = function(type) {
+  ebr_image_reader_single.thumbnails = function(type) {
     // @todo implement it
 
     return this;
-  }; */
+  };
 
   /**
    * Rotate an image.

@@ -56,10 +56,12 @@
             'img/page6.jpg',
             'img/page7.jpg'
           ];
+          var thumbnails = images;
 
           (new EBookReader({
             'book_ID': 1,
             // 'locale': 'ru-RU',
+            'thumbnails_images': thumbnails,
             'images': {
               'single': images,
               'dual': images,

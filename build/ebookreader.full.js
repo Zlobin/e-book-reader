@@ -1,23 +1,14 @@
 /* jslint nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
 /**
- * Base namespace for JEZ.
+ * JEZ
+ *
+ * @version 0.1.3
  */
-var JEZ = JEZ || {},
-    JEZ_locale = [];
-
-(function(win, undef) {
+var JEZ = (function(win, doc, JEZ_locale, undef) {
   'use strict';
 
-  var doc = win.document,
-      JEZ_locale = win.JEZ_locale;
-
-  /**
-   * JEZ
-   *
-   * @version 0.1.2
-   */
-  JEZ = {
+  return {
     'keys': {
       'ENTER': 13,
       'ESCAPE': 27,
@@ -97,9 +88,12 @@ var JEZ = JEZ || {},
               }
 
               if (elem !== null) {
-                elem.addEventListener ?
-                    elem.addEventListener(type, func, false) :
-                    elem.attachEvent('on' + type, func); // IE
+                if (elem.addEventListener) {
+                  elem.addEventListener(type, func, false);
+                } else {
+                   // IE
+                   elem.attachEvent('on' + type, func);
+                }
               }
 
               return this;
@@ -109,9 +103,12 @@ var JEZ = JEZ || {},
               var elem = this.el;
 
               if (elem !== null) {
-                elem.removeEventListener ?
-                    elem.removeEventListener(type, handler, false) :
-                    elem.detachEvent('on' + type, handler); // IE
+                if (elem.removeEventListener) {
+                  elem.removeEventListener(type, handler, false);
+                } else {
+                  // IE
+                  elem.detachEvent('on' + type, handler);
+                }
               }
 
               return this;
@@ -120,7 +117,8 @@ var JEZ = JEZ || {},
             'trigger': function(event_name, args) {
               var evt,
                   elem = this.el,
-                  par = this.parent;
+                  par = this.parent,
+                  returned_data;
 
               if (par.createEvent) {
                 evt = par.createEvent('Events');
@@ -134,10 +132,12 @@ var JEZ = JEZ || {},
               evt.data = args;
 
               if (elem.dispatchEvent) {
-                return elem.dispatchEvent(evt);
+                returned_data = elem.dispatchEvent(evt);
               } else if (elem.fireEvent) {
-                return elem.fireEvent('on' + event_name, evt);
+                returned_data = elem.fireEvent('on' + event_name, evt);
               }
+
+              return returned_data;
             },
             // attr
             'set': function(attr_name, attrs) {
@@ -184,10 +184,11 @@ var JEZ = JEZ || {},
             },
             'data': function(attr_name, attr_val) {
               var prefix = 'data-',
-                  full_attr_name = prefix + attr_name;
+                  full_attr_name = prefix + attr_name,
+                  returned_data = false;
 
               if (arguments.length === 2) { // get data
-                return this.get(full_attr_name);
+                returned_data = this.get(full_attr_name);
               } else if (arguments.length === 3) {
                 if (attr_name === '') { // remove data
                   this.del(full_attr_name);
@@ -195,10 +196,10 @@ var JEZ = JEZ || {},
                   this.set(full_attr_name, attr_val);
                 }
 
-                return true;
+                returned_data = true;
               }
 
-              return false;
+              return returned_data;
             },
             'create': function(params) {
               params = params || {};
@@ -398,9 +399,11 @@ var JEZ = JEZ || {},
     },
     'storage': {
       'prefix': 'jez_',
-      'supports': JEZ.support_local_storage,
+      'isSupport': function() {
+        return win.localStorage !== undef;
+      },
       'set': function(key, val) {
-        if (this.supports) {
+        if (this.isSupport) {
           win.localStorage.setItem(this.prefix + key, JSON.stringify(val));
         }
 
@@ -409,25 +412,25 @@ var JEZ = JEZ || {},
       'get': function(key, default_value) {
         var val;
 
-        if (this.supports) {
+        if (this.isSupport) {
           val = win.localStorage.getItem(this.prefix + key);
         }
 
-        if (!this.supports || !val) {
+        if (!this.isSupport || !val) {
           return default_value;
         }
 
         return JSON.parse(val);
       },
       'remove': function(key) {
-        if (this.supports) {
+        if (this.isSupport) {
           win.localStorage.removeItem(this.prefix + key);
         }
 
         return this;
       },
       'clear': function() {
-        if (this.supports) {
+        if (this.isSupport) {
           win.localStorage.clear();
         }
 
@@ -450,7 +453,6 @@ var JEZ = JEZ || {},
     },
     'vendors': ['', 'ms', 'moz', 'webkit', 'o'],
     'support_xhr': !(win.XMLHttpRequest.prototype.hasOwnProperty('withCredentials')) || !(win.XDomainRequest !== undef),
-    'support_local_storage': win.localStorage !== undef,
     'support_class_list': doc.documentElement.classList !== undef,
     'is_mobile': /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(win.navigator.userAgent),
     // "touchstart" event is faster than "click" on mobile devices
@@ -459,18 +461,15 @@ var JEZ = JEZ || {},
     },
     'hop': Object.prototype.hasOwnProperty
   };
-}(this));
+}(this, this.document, this.JEZ_locale || []));
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+// Asynchronous loading of images
+var ImageLoader = (function(win, JEZ, undef) {
   'use strict';
 
-  var JEZ = win.JEZ,
-      ImageLoader;
-
-  // Asynchronous loading of images
-  ImageLoader = function(img_src, onComplete, onError, onProgress) {
+  return function(img_src, onComplete, onError, onProgress) {
     // Available: ready, progress, stopped, error, done, destroyed
     this.status = 'ready';
     this.loader = undef;
@@ -603,9 +602,7 @@ var JEZ = JEZ || {},
       }.bind(this))
     };
   };
-
-  win.ImageLoader = ImageLoader;
-}(this));
+}(this, this.JEZ));
 
 // English localization for eBookReader
 (function(win) {
@@ -1321,13 +1318,14 @@ var JEZ = JEZ || {},
    *
    * @class
    * @constructor
-   * @version 0.1.0
+   * @version 0.1.1
    * @extends EBookReader.Reader
    **/
   EBR.ImageReader = function() {
     EBR.Reader.call(this);
     var params = parameters.params,
-        storage = JEZ.storage;
+        storage = JEZ.storage,
+        opts = parameters.options;
 
     this.IMAGE_TYPE_PRINT_LETTER = 'print_letter';
     this.IMAGE_TYPE_PRINT_A4 = 'print_a4';
@@ -1339,10 +1337,11 @@ var JEZ = JEZ || {},
     this.sm_container = {};
     this.screen_mode = {};
     this.page_view = {};
+    this.thumbnails = {};
     this.wrapper = {};
     this.toolbar = {};
 
-    __ = JEZ.__(parameters.options.locale);
+    __ = JEZ.__(opts.locale);
 
     parameters.params.hash_images_sizes = params.storage_hash + 'images_sizes';
     parameters.params.image_sizes = storage.get(params.hash_images_sizes, false);
@@ -1363,6 +1362,7 @@ var JEZ = JEZ || {},
         .createWrapper_()
         .initToolbar_()
         .initToolbarPagination_()
+        .createThumbnails_()
         .createPageView_()
         .createScreenModeContainer_()
         .changeScreenMode_(params.set_screen_mode)
@@ -1629,6 +1629,7 @@ var JEZ = JEZ || {},
         $buttons_wrapper = JEZ.dom(buttons_wrapper),
         buttons = {
           'single_screen_mode': {
+            'enable': false,
             'title': __('Single Page'),
             'icon': 'doc-text',
             'events': {
@@ -1639,6 +1640,7 @@ var JEZ = JEZ || {},
             }
           },
           'dual_screen_mode': {
+            'enable': false,
             'title': __('Dual Page'),
             'icon': 'book-open',
             'events': {
@@ -1656,7 +1658,7 @@ var JEZ = JEZ || {},
                 event.preventDefault();
                 var type = params.enable_thumbnails ? 'off' : 'on';
 
-                data.screen_mode.thumbnails(type);
+                data.thumbnailsBlock(type);
               }
             }
           },
@@ -1780,24 +1782,26 @@ var JEZ = JEZ || {},
 
     for (button in buttons) {
       if (JEZ.hop.call(buttons, button)) {
-        current_button = JEZ.dom('button').create({
-          'id': 'EBR_button_' + button,
-          'className': 'EBR_button'
-        });
+        if (buttons[button].enable !== false) {
+          current_button = JEZ.dom('button').create({
+            'id': 'EBR_button_' + button,
+            'className': 'EBR_button'
+          });
 
-        if (buttons[button].icon) {
-          JEZ.dom(current_button).addClass('icon-' + buttons[button].icon);
+          if (buttons[button].icon) {
+            JEZ.dom(current_button).addClass('icon-' + buttons[button].icon);
+          }
+
+          current_button.title = buttons[button].title;
+
+          if (buttons[button].events !== undef) {
+            this.initToolbarButtonEvents_(current_button, buttons[button].events === 'click' ?
+                JEZ.click_event() :
+                buttons[button].events);
+          }
+
+          toolbar_buttons.push(current_button);
         }
-
-        current_button.title = buttons[button].title;
-
-        if (buttons[button].events !== undef) {
-          this.initToolbarButtonEvents_(current_button, buttons[button].events === 'click' ?
-              JEZ.click_event() :
-              buttons[button].events);
-        }
-
-        toolbar_buttons.push(current_button);
       }
     }
 
@@ -1831,6 +1835,133 @@ var JEZ = JEZ || {},
         $button.on(event_name, events[event_name], this);
       }
     }
+
+    return this;
+  };
+
+  /**
+   * ThumbnailsBlock.
+   *
+   * @private
+   * @method thumbnailsBlock
+   * @version 0.1.0
+   * @param {String} status
+   * @returns {Object}
+   **/
+  ebr_image_reader.thumbnailsBlock = function(status) {
+    status === 'on' ? this.showThumbnails_() : this.hideThumbnails_();
+
+    parameters.params.enable_thumbnails = !parameters.params.enable_thumbnails;
+    this.updateURLHash({
+      'name': 'thumbnails',
+      'value': parameters.params.enable_thumbnails ? 1 : 0
+    }, parameters.consts.TYPE_PARTLYREPLACE);
+
+    return this;
+  };
+
+  /**
+   * Create thumbnails.
+   *
+   * @private
+   * @method createThumbnails_
+   * @version 0.1.0
+   * @returns {Object}
+   **/
+  ebr_image_reader.createThumbnails_ = function() {
+    this.thumbnails = JEZ.dom('div').create({
+      'className': 'EBR_thumbnails',
+      'id': 'EBR_thumbnails'
+    });
+
+    JEZ.dom(this.wrapper).append(this.thumbnails);
+
+    return this;
+  };
+
+  /**
+   * Show thumbnails.
+   *
+   * @private
+   * @method showThumbnails_
+   * @version 0.1.0
+   * @returns {Object}
+   **/
+  ebr_image_reader.showThumbnails_ = function() {
+    var opts = parameters.options,
+        thumbnails = opts.thumbnails_images,
+        len = thumbnails.length,
+        i,
+        thumbnail;
+
+     JEZ.dom(this.thumbnails).set('style', {
+      'display': 'block',
+      'width': opts.thumbnails_width + 30 + 'px',
+      'height': JEZ.dom(this.page_view).get('style', 'height')
+    });
+
+    for (i = 0; i < len; i++) {
+      thumbnail = this.addThumbnail_(thumbnails[i], i);
+      JEZ.dom(this.thumbnails).append(thumbnail);
+    }
+
+    return this;
+  };
+
+  /**
+   * Add thumbnail.
+   *
+   * @private
+   * @method addThumbnail_
+   * @version 0.1.0
+   * @param {String} img
+   * @param {Number} num
+   * @returns {Object}
+   **/
+  ebr_image_reader.addThumbnail_ = function(img, num) {
+    var thumbnail_wrapper = JEZ.dom('div').create({
+          'className': 'EBR_thumbnails_wrapper'
+        }),
+        thumbnail = JEZ.dom('img').create({
+          'id': 'EBRthumbnail_' + num,
+          'className': 'EBR_thumbnail_img',
+          'src': img
+        });
+
+    JEZ.dom(thumbnail)
+      .set('style', {
+        'width': parameters.options.thumbnails_width + 'px'
+      })
+      .on('click', function(event, data) {
+        event.preventDefault();
+        var $active = JEZ.dom('.EBR_thumbnail_img.active').find();
+
+        if ($active.el !== null) {
+          $active.removeClass('active');
+        }
+
+        JEZ.dom(event.target).addClass('active');
+
+        data.gotoPage(num + 1);
+      }, this);
+
+    JEZ.dom(thumbnail_wrapper).append(thumbnail);
+
+    return thumbnail_wrapper;
+  };
+
+  /**
+   * Hide thumbnails.
+   *
+   * @private
+   * @method hideThumbnails_
+   * @version 0.1.0
+   * @returns {Object}
+   **/
+  ebr_image_reader.hideThumbnails_ = function() {
+    JEZ.dom(this.thumbnails).set('style', {
+      'display': 'none'
+    });
 
     return this;
   };
@@ -1877,17 +2008,19 @@ var JEZ = JEZ || {},
     // right arrow + top arrow = turn right
     JEZ.dom(doc)
         .on('keydown', function(event, data) {
+          var key = JEZ.keys;
+
           switch (event.keyCode) {
-            case JEZ.keys.LEFT:
+            case key.LEFT:
               data.previousPage();
               break;
-            case JEZ.keys.RIGHT:
+            case key.RIGHT:
               data.nextPage();
               break;
-            case JEZ.keys.HOME:
+            case key.HOME:
               data.firstPage();
               break;
-            case JEZ.keys.END:
+            case key.END:
               data.lastPage();
               break;
           }
@@ -2425,7 +2558,7 @@ var JEZ = JEZ || {},
    *
    * @private
    * @method changeScreenMode_
-   * @version 0.1.0
+   * @version 0.2.0
    * @param {String} mode
    * @throws {Error} Screen mode must be exist.
    * @returns {Object}
@@ -2436,10 +2569,10 @@ var JEZ = JEZ || {},
     if (parameters.params.current_screen_mode !== mode) {
       if (mode === consts.SINGLE_MODE) {
         this.screen_mode = new EBR.ImageReader.ScreenMode.Single(this.sm_container,
-            this.page_view, this.toolbar);
+            this.page_view, this.toolbar, this.thumbnails);
       } else if (mode === consts.DUAL_MODE) {
         this.screen_mode = new EBR.ImageReader.ScreenMode.Dual(this.sm_container,
-            this.page_view, this.toolbar);
+            this.page_view, this.toolbar, this.thumbnails);
       } else {
         throw new Error('Screen Mode "' + mode + '" does not exist');
       }
@@ -2511,7 +2644,7 @@ var JEZ = JEZ || {},
    *
    * @private
    * @method addMobileFeatures
-   * @version 0.1.0
+   * @version 0.1.1
    * @returns {Object}
    **/
   ebr_image_reader.addMobileFeatures_ = function() {
@@ -2519,14 +2652,14 @@ var JEZ = JEZ || {},
       'EBR_button_thumbnails',
       'EBR_button_zoom_out',
       'EBR_button_zoom_in',
-      'EBR_button_print'
+      'EBR_button_fullscreen'
     ]);
 
     // Scrolling pages uses user touch.
     JEZ.touchScrolling(this.page_view);
 
     // Change color depending on the light.
-    // @see http://www.w3.org/TR/ambient-light/
+    // @link http://www.w3.org/TR/ambient-light/
     JEZ.dom(win).on('devicelight', function(event) {
       var $el = JEZ.dom(this.wrapper),
           lux = event.value;
@@ -2539,7 +2672,7 @@ var JEZ = JEZ || {},
         $el.addClass('bright');
       }
     }.bind(this));
-    
+
     /* 
 // Check to make sure the browser supprots DeviceOrientationEvents
 if (window.DeviceOrientationEvent) {
@@ -2644,16 +2777,17 @@ if (window.DeviceOrientationEvent) {
    * Image reader single screen mode.
    *
    * @class
-   * @version 0.1.0
+   * @version 0.2.0
    * @extends EBookReader.Reader.ScreenMode.Single
    * @param {Object} sm_container
    * @param {Object} page_view
    * @param {Object} toolbar
    **/
-  EBR.ImageReader.ScreenMode.Single = function(sm_container, page_view, toolbar) {
+  EBR.ImageReader.ScreenMode.Single = function(sm_container, page_view, toolbar, thumbnails) {
     this.sm_container = sm_container;
     this.page_view = page_view;
     this.toolbar = toolbar;
+    this.thumbnails = thumbnails;
   };
 
   JEZ.inherits(EBR.ImageReader.ScreenMode.Single, EBR.Reader.ScreenMode.Single);
@@ -2758,11 +2892,11 @@ if (window.DeviceOrientationEvent) {
    * @param {String} type
    * @returns {Object}
    */
-  /* ebr_image_reader_single.thumbnails = function(type) {
+  ebr_image_reader_single.thumbnails = function(type) {
     // @todo implement it
 
     return this;
-  }; */
+  };
 
   /**
    * Rotate an image.

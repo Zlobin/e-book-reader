@@ -1,13 +1,10 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+// Asynchronous loading of images
+var ImageLoader = (function(win, JEZ, undef) {
   'use strict';
 
-  var JEZ = win.JEZ,
-      ImageLoader;
-
-  // Asynchronous loading of images
-  ImageLoader = function(img_src, onComplete, onError, onProgress) {
+  return function(img_src, onComplete, onError, onProgress) {
     // Available: ready, progress, stopped, error, done, destroyed
     this.status = 'ready';
     this.loader = undef;
@@ -140,6 +137,4 @@
       }.bind(this))
     };
   };
-
-  win.ImageLoader = ImageLoader;
-}(this));
+}(this, this.JEZ));

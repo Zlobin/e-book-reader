@@ -139,7 +139,7 @@ module.exports = function(grunt) {
       minify: {
         expand: true,
         cwd: '<%= buildDir %>',
-        src: ['*.css', '*.min.css'],
+        src: ['*.css'],
         dest: '<%= buildDir %>',
         ext: '.min.css'
       }
@@ -172,6 +172,13 @@ module.exports = function(grunt) {
         dest: '<%= fullMinDest %>'
       }
     },
+    clean: {
+      main: {
+        src: [
+          '<%= buildDir %>/*'
+        ]
+      }
+    },
     grock: {
       options: {
         github: false,
@@ -187,6 +194,7 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('default', [
+    'clean',
     'jslint',
     'concat:ebr',
     'removelogging',

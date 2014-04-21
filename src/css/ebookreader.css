@@ -31,6 +31,23 @@
   -webkit-text-size-adjust: none;
 }
 
+/*
+  Change color depending on the light.
+  @link http://www.w3.org/TR/ambient-light/
+*/
+
+#EBookReader.dim {
+  /* */
+}
+
+#EBookReader.normal {
+  /* */
+}
+
+#EBookReader.bright {
+  /* */
+}
+
 .JEZ_modal input, #EBookReader input,
 .JEZ_modal textarea, #EBookReader textarea {
   resize: none;
@@ -257,6 +274,30 @@ p {
   background-color: #999;
 }
 
+/* ------ Thumbnails ------ */
+
+#EBookReader .EBR_thumbnails {
+  display: none;
+  float: left;
+  width: 150px;
+  min-height: 100px;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
+  text-align: center;
+}
+
+#EBookReader .EBR_thumbnails .EBR_thumbnail_img {
+  cursor: pointer;
+  border: 1px dotted #ccc;
+  opacity: .5;
+}
+
+#EBookReader .EBR_thumbnails .EBR_thumbnail_img.active {
+  border: 1px solid #f00;
+  opacity: 1;
+}
+
 /* ------ SideBar ------ */
 
 /* ------ Page Viewer ------ */
@@ -477,6 +518,7 @@ p {
   #EBR_button_dual_screen_mode,
   .EBR_pagination_wrapper,
   #EBR_button_thumbnails,
+  #EBR_button_fullscreen,
   .EBR_chapters_wrapper {
     display: none;
   }
@@ -486,10 +528,6 @@ p {
   #EBookReader [class*=' icon-']:before,
   #EBookReader [class^='icon-']:before {
     font-size: 80%;
-  }
-
-  #EBR_button_print {
-    display: none;
   }
 }
 

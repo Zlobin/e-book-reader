@@ -16,8 +16,7 @@
     <meta name="fragment" content="!">
 
     <link rel="shortcut icon" href="/favicon.ico">
-    <!--<link rel="stylesheet" media="all" href="../build/ebookreader.min.css">-->
-    <link rel="stylesheet" media="all" href="../build/ebookreader.css">
+    <link rel="stylesheet" media="all" href="../build/ebookreader.min.css">
 
     <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js"></script>
@@ -45,10 +44,12 @@
             'img/page6.jpg',
             'img/page7.jpg'
           ];
+          var thumbnails = images;
 
           (new EBookReader({
             'book_ID': 1,
-            // 'locale': 'ru-ru',
+            // 'locale': 'ru-RU',
+            'thumbnails_images': thumbnails,
             'images': {
               'single': images,
               'dual': images,
