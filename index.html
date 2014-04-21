@@ -2,7 +2,7 @@
 <html lang="en-US" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>eBookReader</title>
+    <title>eBookReader Demo. Prod-version.</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="HandheldFriendly" content="True">
@@ -12,6 +12,8 @@
     <!-- Disable selected phones and adresses -->
     <meta name="format-detection" content="telephone=no">
     <meta name="format-detection" content="address=no">
+    <!-- Indexing of the ajax sites -->
+    <meta name="fragment" content="!">
 
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" media="all" href="https://rawgithub.com/Zlobin/e-book-reader/master/build/ebookreader.min.css">
@@ -42,10 +44,12 @@
             'img/page6.jpg',
             'img/page7.jpg'
           ];
+          var thumbnails = images;
 
           (new EBookReader({
             'book_ID': 1,
-            // 'locale': 'ru-ru',
+            // 'locale': 'ru-RU',
+            'thumbnails_images': thumbnails,
             'images': {
               'single': images,
               'dual': images,
