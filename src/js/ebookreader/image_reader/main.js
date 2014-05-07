@@ -77,6 +77,10 @@
     if (JEZ.is_mobile) {
       this.addMobileFeatures_();
     }
+    
+    if (params.enable_thumbnails) {
+      this.showThumbnails_();
+    }
   };
 
   JEZ.inherits(EBR.ImageReader, EBR.Reader);
