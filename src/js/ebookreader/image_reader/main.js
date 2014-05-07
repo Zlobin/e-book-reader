@@ -81,6 +81,10 @@
     if (params.enable_thumbnails) {
       this.showThumbnails_();
     }
+
+    if (params.print_popup) {
+      this.print('on');
+    }
   };
 
   JEZ.inherits(EBR.ImageReader, EBR.Reader);
