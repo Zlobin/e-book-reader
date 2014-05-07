@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>eBookReader test.</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="True">
+    <!-- FullScreen Mode -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Disable selected phones and adresses -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <!-- Indexing of the ajax sites -->
+    <meta name="fragment" content="!">
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" media="all" href="../bower_components/mocha/mocha.css">
+    <link rel="stylesheet" media="all" href="../build/ebookreader.min.css">
+    <script src="../bower_components/requirejs/require.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="mocha"></div>
+
+    <script>
+      // @link http://chaijs.com/api/bdd/ for Chai syntax.
+      // @link http://sinonjs.org/ for sinon spy.
+
+      /*
+        ok           Assert that a statsement is “truthy”
+        equal        Assert that two values are equivalent to each other using non-strict comparison. i.e., ==
+        strictEqual  Make a strict assertion that two values are equivalent to each other. i.e, ===
+        test         Add a test to the list of tests to run
+        asyncTest    Add a test for an asynchronous section of code
+        throws       A test to run in the event of an exception being thrown
+      */
+
+      (function(global) {
+        'use strict';
+
+        var startLoad = [
+          'require', 'chai', 'mocha', 'sinon'
+        ];
+
+        global.requirejs.config({
+          baseUrl: '../bower_components',
+          paths: {          
+            jez: 'jez/build/jez.min',
+            text: 'require-text/text',
+            mocha: 'mocha/mocha',
+            chai: 'chai/chai',
+            sinon: 'sinon/lib/sinon',
+            ebookreader: '../../build/ebookreader'
+          },
+          shim: {
+            jez: {
+              exports: 'JEZ'
+            },
+            ebookreader: {
+              deps: ['jez']
+            }
+          }
+        });
+
+        global.require(startLoad, function(require, chai) {
+          var assert = chai.assert,
+              expect = chai.expect,
+              should = chai.should(),
+              // Include spec files here.
+              specs = [
+                // 'lib/image_loader',
+                'polyfills'
+              ];
+
+          global.mocha.setup({
+            ui: 'bdd',
+            bail: false
+          });
+
+          global.requirejs.config({
+            baseUrl: 'spec'
+          });
+
+          global.require(specs, function() {
+            global.mocha.run();
+          });
+        });
+      }(this));
+    </script>
+  </body>
+</html>

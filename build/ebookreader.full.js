@@ -466,7 +466,7 @@ var JEZ = (function(win, doc, JEZ_locale, undef) {
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
 // Asynchronous loading of images
-var ImageLoader = (function(win, JEZ, undef) {
+var ImageLoader = (function(global, JEZ, undef) {
   'use strict';
 
   return function(img_src, onComplete, onError, onProgress) {
@@ -521,7 +521,7 @@ var ImageLoader = (function(win, JEZ, undef) {
       return {
         'start': function() {
           xhr.send();
-          win.setTimeout(function () {
+          global.setTimeout(function () {
             if (xhr.readyState === 3) {
               xhr.abort();
             }
@@ -553,7 +553,7 @@ var ImageLoader = (function(win, JEZ, undef) {
             .on('load', function(event) {
               var el = event.target;
 
-              win.URL.revokeObjectURL(img_src);
+              global.URL.revokeObjectURL(img_src);
               if ((el.naturalWidth === undef || el.naturalWidth === 0) || !el.complete) {
                 onErrorImg(event);
               } else {
@@ -605,10 +605,8 @@ var ImageLoader = (function(win, JEZ, undef) {
 }(this, this.JEZ));
 
 // English localization for eBookReader
-(function(win) {
+(function(JEZ_locale) {
   'use strict';
-
-  var JEZ_locale = win.JEZ_locale || [];
 
   JEZ_locale['en-us'] = {
     'Single Page': 'Single Page',
@@ -638,15 +636,11 @@ var ImageLoader = (function(win, JEZ, undef) {
     'Loading. Please wait': 'Loading. Please wait...',
     'Printout': 'Printout'
   };
-
-  win.JEZ_locale = JEZ_locale;
-}(this));
+}(this.JEZ_locale || []));
 
 // Russian localization for eBookReader
-(function(win) {
+(function(JEZ_locale) {
   'use strict';
-
-  var JEZ_locale = win.JEZ_locale || [];
 
   JEZ_locale['ru-ru'] = {
     'Single Page': 'Одностраничный режим',
@@ -676,9 +670,7 @@ var ImageLoader = (function(win, JEZ, undef) {
     'Loading. Please wait': 'Загрузка. Пожалуйста, подождите',
     'Printout': 'Вывод на печать'
   };
-
-  win.JEZ_locale = JEZ_locale;
-}(this));
+}(this.JEZ_locale || []));
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
@@ -688,10 +680,10 @@ var ImageLoader = (function(win, JEZ, undef) {
  * @author Eugene Zlobin http://zlobin.pro/
  * @version @@VERSION
  */
-(function(win) {
+(function(global) {
   'use strict';
 
-  var JEZ = win.JEZ,
+  var JEZ = global.JEZ,
       parameters = {
         'options': {},
         'params': {},
@@ -864,18 +856,18 @@ var ImageLoader = (function(win, JEZ, undef) {
     return;
   };
 
-  win.EBookReader = EBookReader;
-  win.EBRParams = parameters;
+  global.EBookReader = EBookReader;
+  global.EBRParams = parameters;
 }(this));
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+(function(global, undef) {
   'use strict';
 
-  var EBR = win.EBookReader,
-      JEZ = win.JEZ,
-      parameters = win.EBRParams,
+  var EBR = global.EBookReader,
+      JEZ = global.JEZ,
+      parameters = global.EBRParams,
       ebr_reader,
       ebr_screen_mode,
       ebr_screen_mode_single,
@@ -966,7 +958,7 @@ var ImageLoader = (function(win, JEZ, undef) {
    * @returns {Object}
    */
   ebr_reader.parseURLHash_ = function() {
-    var win_hash = win.location.hash,
+    var win_hash = global.location.hash,
         param_value,
         url_params,
         param_name,
@@ -1073,7 +1065,7 @@ var ImageLoader = (function(win, JEZ, undef) {
    * @returns {Object}
    */
   ebr_reader.updateURLHash = function(params, type) {
-    var win_hash = win.location.hash,
+    var win_hash = global.location.hash,
         new_hash,
         reg_exp,
         consts = parameters.consts;
@@ -1081,14 +1073,14 @@ var ImageLoader = (function(win, JEZ, undef) {
     type = type || consts.TYPE_FULLREPLACE;
 
     if (type === consts.TYPE_FULLREPLACE) {
-      win.location.hash = params.join('/');
+      global.location.hash = params.join('/');
     } else if (type === consts.TYPE_PARTLYREPLACE) {
       reg_exp = new RegExp('\/' + params.name + '\/\\w+\/', 'i');
 
       if (win_hash !== '') {
         new_hash = win_hash.replace(reg_exp, '/' + params.name + '/' + params.value + '/');
         if (new_hash !== win_hash) {
-          win.location.hash = new_hash;
+          global.location.hash = new_hash;
         }
       }
     }
@@ -1303,13 +1295,13 @@ var ImageLoader = (function(win, JEZ, undef) {
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+(function(global, undef) {
   'use strict';
 
-  var parameters = win.EBRParams,
-      EBR = win.EBookReader,
-      JEZ = win.JEZ,
-      doc = win.document,
+  var parameters = global.EBRParams,
+      EBR = global.EBookReader,
+      JEZ = global.JEZ,
+      doc = global.document,
       ebr_image_reader,
       __; // Localization
 
@@ -1975,7 +1967,7 @@ var ImageLoader = (function(win, JEZ, undef) {
    * @returns {Object}
    */
   ebr_image_reader.setupResizeEvent_ = function() {
-    win.onresize = function() {
+    global.onresize = function() {
       this.screen_mode.recalculateSizes();
     }.bind(this);
 
@@ -2265,7 +2257,7 @@ var ImageLoader = (function(win, JEZ, undef) {
    * @returns {Object}
    **/
   ebr_image_reader.sendPrint = function(start_index, end_index, paper_size) {
-    var print_window = win.open('#', '_blank'),
+    var print_window = global.open('#', '_blank'),
         print_doc = print_window.document,
         images = [],
         page_size,
@@ -2409,7 +2401,7 @@ var ImageLoader = (function(win, JEZ, undef) {
 
     if (parameters.options.auto_height) {
       JEZ.dom(this.page_view).set('style', {
-        'height': win.innerHeight - this.toolbar.offsetHeight + 'px'
+        'height': global.innerHeight - this.toolbar.offsetHeight + 'px'
       });
     }
 
@@ -2758,13 +2750,13 @@ if (window.DeviceOrientationEvent) {
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win) {
+(function(global) {
   'use strict';
 
-  var ImageLoader = win.ImageLoader,
-      parameters = win.EBRParams,
-      EBR = win.EBookReader,
-      JEZ = win.JEZ,
+  var ImageLoader = global.ImageLoader,
+      parameters = global.EBRParams,
+      EBR = global.EBookReader,
+      JEZ = global.JEZ,
       ebr_image_reader_single;
 
   // _ Screen Mode _____________________________________________________________
@@ -3049,7 +3041,7 @@ if (window.DeviceOrientationEvent) {
     parameters.params.page_height = sizes.height;
 
     JEZ.dom(this.page_view).set('style', {
-      'height': (win.innerHeight - this.toolbar.clientHeight - 1) + 'px'
+      'height': (global.innerHeight - this.toolbar.clientHeight - 1) + 'px'
     });
 
     $sm_container.set('style', {
@@ -3209,11 +3201,11 @@ if (window.DeviceOrientationEvent) {
 
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win) {
+(function(global) {
   'use strict';
 
-  var EBR = win.EBookReader,
-      JEZ = win.JEZ;
+  var EBR = global.EBookReader,
+      JEZ = global.JEZ;
 
   /**
    * HTML Reader base.

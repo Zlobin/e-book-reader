@@ -1,10 +1,10 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win) {
+(function(global) {
   'use strict';
 
-  var EBR = win.EBookReader,
-      JEZ = win.JEZ;
+  var EBR = global.EBookReader,
+      JEZ = global.JEZ;
 
   /**
    * HTML Reader base.

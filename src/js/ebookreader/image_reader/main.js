@@ -1,12 +1,12 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+(function(global, undef) {
   'use strict';
 
-  var parameters = win.EBRParams,
-      EBR = win.EBookReader,
-      JEZ = win.JEZ,
-      doc = win.document,
+  var parameters = global.EBRParams,
+      EBR = global.EBookReader,
+      JEZ = global.JEZ,
+      doc = global.document,
       ebr_image_reader,
       __; // Localization
 
@@ -57,7 +57,7 @@
     console.time('EBookReader setup and render');
     this.initFullScreenHandler_()
         .createWrapper_()
-        .initToolbar_()
+        .createToolbar_()
         .initToolbarPagination_()
         .createThumbnails_()
         .createPageView_()
@@ -88,7 +88,7 @@
    * @private
    * @method initEvents_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initEvents_ = function() {
     var opts = parameters.options;
@@ -97,7 +97,6 @@
         .initToolbarButtons_()
         .initToolbarVisibility_()
         .initScrollEvent_()
-        .initMouseWheelEvent_()
         .initURLEvents_();
 
     if (opts.enable_chapters) {
@@ -119,7 +118,7 @@
    * @private
    * @method initURLEvents_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initURLEvents_ = function() {
     var consts = parameters.consts;
@@ -147,7 +146,7 @@
    * @private
    * @method initScrollEvent_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initScrollEvent_ = function() {
     var params = parameters.params,
@@ -177,53 +176,12 @@
   };
 
   /**
-   * Init mouse wheel event.
-   *
-   * @private
-   * @method initMouseWheelEvent_
-   * @version 0.1.0
-   * @returns {Object}
-   **/
-  ebr_image_reader.initMouseWheelEvent_ = function() {
-    /* var scale = 1.5;
-    var originx = 0;
-    var originy = 0;
-
-    JEZ.dom(this.page_view)
-        .on('mousewheel', function(event, data) {
-          // Zooming
-          // var mousex = event.clientX - canvas.offsetLeft;
-          // var mousey = event.clientY - canvas.offsetTop;
-          var wheel = event.wheelDelta / 120; //n or -n
-          var zoom = Math.pow(1 + Math.abs(wheel) / 2 , wheel > 0 ? 1 : -1);
-
-          context.translate(
-                originx,
-                originy
-            );
-            context.scale(zoom,zoom);
-            context.translate(
-                -( mousex / scale + originx - mousex / ( scale * zoom ) ),
-                -( mousey / scale + originy - mousey / ( scale * zoom ) )
-            );
-
-            originx = ( mousex / scale + originx - mousex / ( scale * zoom ) );
-            originy = ( mousey / scale + originy - mousey / ( scale * zoom ) );
-            scale *= zoom;
-
-          return;
-        }, this); */
-
-    return this;
-  };
-
-  /**
    * Get hash.
    *
    * @private
    * @method getHash_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.getHash_ = function() {
     var params = parameters.params,
@@ -241,12 +199,12 @@
   };
 
   /**
-   * Create wrapper.
+   * Create div wrapper.
    *
    * @private
    * @method createWrapper_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.createWrapper_ = function() {
     this.wrapper = JEZ.dom('div').create({
@@ -258,14 +216,14 @@
   };
 
   /**
-   * Init toolbar.
+   * Create toolbar's div element and append into wrapper.
    *
    * @private
-   * @method initToolbar_
+   * @method createToolbar_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
-  ebr_image_reader.initToolbar_ = function() {
+  ebr_image_reader.createToolbar_ = function() {
     this.toolbar = JEZ.dom('div').create({
       'className': 'EBR_toolbar',
       'id': 'EBR_toolbar'
@@ -282,7 +240,7 @@
    * @private
    * @method initToolbarVisibility_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarVisibility_ = function() {
     var $el = JEZ.dom(this.toolbar);
@@ -311,7 +269,7 @@
    * @private
    * @method initToolbarButtons_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarButtons_ = function() {
     var toolbar_buttons = [],
@@ -519,9 +477,9 @@
    * @private
    * @method initToolbarButtonEvents_
    * @version 0.1.0
-   * @param {Object} button
-   * @param {Object} events
-   * @returns {Object}
+   * @param {object} button
+   * @param {object} events
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarButtonEvents_ = function(button, events) {
     var event_name,
@@ -542,8 +500,8 @@
    * @private
    * @method thumbnailsBlock
    * @version 0.1.0
-   * @param {String} status
-   * @returns {Object}
+   * @param {string} status
+   * @returns {object}
    **/
   ebr_image_reader.thumbnailsBlock = function(status) {
     status === 'on' ? this.showThumbnails_() : this.hideThumbnails_();
@@ -563,7 +521,7 @@
    * @private
    * @method createThumbnails_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.createThumbnails_ = function() {
     this.thumbnails = JEZ.dom('div').create({
@@ -582,7 +540,7 @@
    * @private
    * @method showThumbnails_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.showThumbnails_ = function() {
     var opts = parameters.options,
@@ -611,9 +569,9 @@
    * @private
    * @method addThumbnail_
    * @version 0.1.0
-   * @param {String} img
-   * @param {Number} num
-   * @returns {Object}
+   * @param {string} img
+   * @param {number} num
+   * @returns {object}
    **/
   ebr_image_reader.addThumbnail_ = function(img, num) {
     var thumbnail_wrapper = JEZ.dom('div').create({
@@ -653,7 +611,7 @@
    * @private
    * @method hideThumbnails_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.hideThumbnails_ = function() {
     JEZ.dom(this.thumbnails).set('style', {
@@ -669,10 +627,10 @@
    * @private
    * @method setupResizeEvent_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_image_reader.setupResizeEvent_ = function() {
-    win.onresize = function() {
+    global.onresize = function() {
       this.screen_mode.recalculateSizes();
     }.bind(this);
 
@@ -685,7 +643,7 @@
    * @private
    * @method setupKeyListener_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_image_reader.setupKeyListener_ = function() {
     // @todo implement it
@@ -738,7 +696,7 @@
    * @private
    * @method initToolbarSearch_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarSearch_ = function() {
     var search_wrapper = JEZ.dom('div').create({
@@ -780,7 +738,7 @@
    * @private
    * @method initToolbarPagination_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarPagination_ = function() {
     var pagination_wrapper = JEZ.dom('div').create({
@@ -816,7 +774,7 @@
    * @private
    * @method initToolbarPaginationEvents_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarPaginationEvents_ = function() {
     JEZ.dom(this.toolbar_paginator)
@@ -847,7 +805,7 @@
    * @private
    * @method printForm_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.printForm_ = function() {
     var params = parameters.params,
@@ -898,9 +856,9 @@
    * @private
    * @method printForm_
    * @version 0.1.0
-   * @param {String} page_size
-   * @param {Array} images
-   * @returns {Object}
+   * @param {string} page_size
+   * @param {array} images
+   * @returns {object}
    **/
   ebr_image_reader.printPage_ = function(page_size, images) {
     var print_page = [
@@ -938,7 +896,7 @@
    * @private
    * @method initToolbarPrint_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarPrint_ = function() {
     this.print_wrapper = JEZ.dom('div').create({
@@ -956,13 +914,13 @@
    *
    * @method sendPrint
    * @version 0.1.0
-   * @param {Number} start_index
-   * @param {Number} end_index
-   * @param {String} paper_size
-   * @returns {Object}
+   * @param {number} start_index
+   * @param {number} end_index
+   * @param {string} paper_size
+   * @returns {object}
    **/
   ebr_image_reader.sendPrint = function(start_index, end_index, paper_size) {
-    var print_window = win.open('#', '_blank'),
+    var print_window = global.open('#', '_blank'),
         print_doc = print_window.document,
         images = [],
         page_size,
@@ -994,7 +952,7 @@
    * @private
    * @method initPrintButtonEvents_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initPrintButtonEvents_ = function() {
     JEZ.dom('#EBR_goto_print')
@@ -1029,7 +987,7 @@
    * @private
    * @method initToolbarChapters_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initToolbarChapters_ = function() {
     var chapters_wrapper = JEZ.dom('div').create({
@@ -1048,7 +1006,7 @@
    * @private
    * @method createPageView_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.createPageView_ = function() {
     this.page_view = JEZ.dom('main').create({
@@ -1067,7 +1025,7 @@
    * @private
    * @method createScreenModeContainer_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.createScreenModeContainer_ = function() {
     var single = parameters.consts.SINGLE_MODE,
@@ -1094,7 +1052,7 @@
    * @private
    * @method render_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.render_ = function() {
     var class_name = JEZ.is_mobile ? 'mobile' : 'non_mobile',
@@ -1106,7 +1064,7 @@
 
     if (parameters.options.auto_height) {
       JEZ.dom(this.page_view).set('style', {
-        'height': win.innerHeight - this.toolbar.offsetHeight + 'px'
+        'height': global.innerHeight - this.toolbar.offsetHeight + 'px'
       });
     }
 
@@ -1118,8 +1076,8 @@
    *
    * @method updateToolbarPaginator
    * @version 0.1.0
-   * @param {Number} page
-   * @returns {Object}
+   * @param {number} page
+   * @returns {object}
    **/
   ebr_image_reader.updateToolbarPaginator = function(page) {
     this.toolbar_paginator.value = page >> 0;
@@ -1132,8 +1090,8 @@
    *
    * @method fullScreen
    * @version 0.1.0
-   * @param {String} status
-   * @returns {Object}
+   * @param {string} status
+   * @returns {object}
    **/
   ebr_image_reader.fullScreen = function(status) {
     console.time('EBookReader.image_reader.fullscreen ' + status);
@@ -1191,7 +1149,7 @@
    * @private
    * @method initFullScreenHandler_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.initFullScreenHandler_ = function() {
     var changeFullScreenHandler = function() {
@@ -1214,8 +1172,8 @@
    *
    * @method print
    * @version 0.1.0
-   * @param {String} status
-   * @returns {Object}
+   * @param {string} status
+   * @returns {object}
    **/
   ebr_image_reader.print = function(status) {
     var $button = JEZ.dom('#EBR_button_print').find(),
@@ -1256,9 +1214,9 @@
    * @private
    * @method changeScreenMode_
    * @version 0.2.0
-   * @param {String} mode
+   * @param {string} mode
    * @throws {Error} Screen mode must be exist.
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.changeScreenMode_ = function(mode) {
     var consts = parameters.consts;
@@ -1292,7 +1250,7 @@
    * @private
    * @method changeStateScreenModeButtons_
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.changeStateScreenModeButtons_ = function() {
     var $single_button = JEZ.dom('#EBR_button_single_screen_mode').find(),
@@ -1321,8 +1279,8 @@
    * @private
    * @method removeToolbarButtons_
    * @version 0.1.0
-   * @param {Array} buttons
-   * @returns {Object}
+   * @param {array} buttons
+   * @returns {object}
    **/
   ebr_image_reader.removeToolbarButtons_ = function(buttons) {
     var i = buttons.length;
@@ -1342,7 +1300,7 @@
    * @private
    * @method addMobileFeatures
    * @version 0.1.1
-   * @returns {Object}
+   * @returns {object}
    **/
   ebr_image_reader.addMobileFeatures_ = function() {
     this.removeToolbarButtons_([
@@ -1352,11 +1310,11 @@
       'EBR_button_fullscreen'
     ]);
 
-    // Scrolling pages uses user touch.
+    // Touch scroll.
     JEZ.touchScrolling(this.page_view);
 
     // Change color depending on the light.
-    // @link http://www.w3.org/TR/ambient-light/
+    // @see {@link http://www.w3.org/TR/ambient-light/|W3.org}
     JEZ.dom(win).on('devicelight', function(event) {
       var $el = JEZ.dom(this.wrapper),
           lux = event.value;
@@ -1370,22 +1328,6 @@
       }
     }.bind(this));
 
-    /* 
-// Check to make sure the browser supprots DeviceOrientationEvents
-if (window.DeviceOrientationEvent) {
-  // Create an event listener
-  window.addEventListener('deviceorientation', function(event) {
-      // Get the left-to-right tilt (in degrees).
-    var tiltLR = event.gamma;
-
-    // Get the front-to-back tilt (in degrees).
-    var titleFB = event.beta;
-
-      // Get the direction of the device (in degrees).
-    var direction = event.alpha;
-  });
-} */
-
     return this;
   };
 
@@ -1394,8 +1336,8 @@ if (window.DeviceOrientationEvent) {
    *
    * @method invert
    * @version 0.1.0
-   * @param {String} status
-   * @returns {Object}
+   * @param {string} status
+   * @returns {object}
    */
   ebr_image_reader.invert = function(status) {
     console.time('EBookReader.image_reader.single.invert ' + status);
@@ -1423,10 +1365,10 @@ if (window.DeviceOrientationEvent) {
    *
    * @method gotoPage
    * @version 0.1.0
-   * @param {Number} page_num
-   * @param {String} from
+   * @param {number} page_num
+   * @param {string} from
    * @throws {Error} Page must be exist.
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_image_reader.gotoPage = function(page_num, from) {
     from = from || false;

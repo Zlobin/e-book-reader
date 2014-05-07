@@ -9,9 +9,13 @@
     "console-polyfill": "latest",
     "requirejs": "latest",
     "requirejs-text": "latest",
+    "karma": "latest",
     "mocha": "latest",
+    "karma-mocha": "latest",
     "chai": "latest",
+    "karma-chai": "latest",
     "sinon": "latest",
-    "sinon-chai": "latest"
+    "sinon-chai": "latest",
+    "karma-sinon-chai": "latest"
   }
 }

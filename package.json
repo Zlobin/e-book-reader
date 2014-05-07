@@ -35,7 +35,7 @@
     "grunt-open": "latest",
     "load-grunt-tasks": "latest",
     "time-grunt": "latest",
-    "grunt-grock": "latest"
+    "grunt-jsdoc": "latest"
   },
   "engines": {
     "node": ">=0.10.0"

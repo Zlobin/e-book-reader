@@ -6,10 +6,10 @@
  * @author Eugene Zlobin http://zlobin.pro/
  * @version @@VERSION
  */
-(function(win) {
+(function(global) {
   'use strict';
 
-  var JEZ = win.JEZ,
+  var JEZ = global.JEZ,
       parameters = {
         'options': {},
         'params': {},
@@ -22,14 +22,18 @@
    * eBookReader JS application.
    *
    * @constructor
-   * @version @@VERSION
-   * @param {Object} user_options
+   * @param {object} user_options
    */
   EBookReader = function(user_options) {
     console.time('EBookReader full init');
     var opts,
         el_id,
         root_el,
+        /**
+         * Factory method.
+         *
+         * @throws Will throw an error if the argument is not correct reader module.
+         **/
         Factory = function(module) {
           var reader;
 
@@ -47,14 +51,16 @@
     /**
      * Current version of the application.
      *
+     * @readonly
      * @const
+     * @type {string}
      **/
     this.VERSION = '@@VERSION';
 
     /**
      * Global reader.
      *
-     * @type {Object}
+     * @type {object}
      **/
     this.reader = null;
 
@@ -72,7 +78,7 @@
       'book_ID': 0,
       'auto_height': true,
       /*
-        Example for param "TOC_images":
+        @example
         [
           'img_toc_1.png', 'img_toc_2.png', ...
         ]
@@ -81,7 +87,7 @@
       'thumbnails_width': 150, // px
       'thumbnails_images_preload': true,
       /*
-        Example for param "images":
+        @example
         {
           'single'       : ['img_s_1.png', 'img_s_2.png', ...],
           'dual'         : ['img_d_1.png', 'img_d_2.png', ...],
@@ -92,7 +98,7 @@
       'images': {},
       'images_preload': true,
       /*
-        Example for param "chapters":
+        @example
         {
           'Chapter Title #1' : {'page': 1},
           'Chapter Title #2' : {'page': 19},
@@ -106,7 +112,7 @@
       'enable_print': true,
       'enable_sidebar': false,
       /*
-        Example for param "sidebar_info":
+        @example
         {
           'Title' : 'Book Title',
           'Author' : 'Book author',
@@ -115,7 +121,7 @@
         }
       */
       'sidebar_info': {},
-       // It possible using, for instance for CDN.
+       // For instance, it's possible for using CDN.
       'enable_DNS_prefetch': true,
        // This parameter is related to "enable_DNS_prefetch".
       'CDN_host': 'site.com',
@@ -145,9 +151,7 @@
       'onAfterLoad': JEZ.noop
     };
 
-    /**
-     * Options for application.
-     **/
+    /* Options. */
     parameters.options = JEZ.extend(this.defaults, user_options);
     opts = parameters.options;
     el_id = opts.root_element_ID;
@@ -155,6 +159,8 @@
 
     /**
      * Consts.
+     *
+     * @readonly
      **/
     parameters.consts = {
       'TYPE_PARTLYREPLACE': 'partly_replace',
@@ -163,9 +169,7 @@
       'DUAL_MODE': 'dual'
     };
 
-    /**
-     * Root element.
-     **/
+    /* Root element. */
     parameters.root_element = JEZ.dom('#' + el_id).find(false);
     root_el = parameters.root_element;
 
@@ -182,6 +186,6 @@
     return;
   };
 
-  win.EBookReader = EBookReader;
-  win.EBRParams = parameters;
+  global.EBookReader = EBookReader;
+  global.EBRParams = parameters;
 }(this));

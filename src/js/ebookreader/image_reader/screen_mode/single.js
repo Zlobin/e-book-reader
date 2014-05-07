@@ -1,12 +1,12 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win) {
+(function(global) {
   'use strict';
 
-  var ImageLoader = win.ImageLoader,
-      parameters = win.EBRParams,
-      EBR = win.EBookReader,
-      JEZ = win.JEZ,
+  var ImageLoader = global.ImageLoader,
+      parameters = global.EBRParams,
+      EBR = global.EBookReader,
+      JEZ = global.JEZ,
       ebr_image_reader_single;
 
   // _ Screen Mode _____________________________________________________________
@@ -21,9 +21,9 @@
    * @class
    * @version 0.2.0
    * @extends EBookReader.Reader.ScreenMode.Single
-   * @param {Object} sm_container
-   * @param {Object} page_view
-   * @param {Object} toolbar
+   * @param {object} sm_container
+   * @param {object} page_view
+   * @param {object} toolbar
    **/
   EBR.ImageReader.ScreenMode.Single = function(sm_container, page_view, toolbar, thumbnails) {
     this.sm_container = sm_container;
@@ -40,9 +40,9 @@
    *
    * @method getImage
    * @version 0.1.0
-   * @param {Number} img_num
+   * @param {number} img_num
    * @throws {Error} Image must be exist.
-   * @returns {String}
+   * @returns {string}
    */
   ebr_image_reader_single.getImage = function(img_num) {
     var images = parameters.options.images,
@@ -60,9 +60,9 @@
    *
    * @method updateScrollByPage
    * @version 0.1.0
-   * @param {Object} container
-   * @param {Number} page
-   * @returns {Object}
+   * @param {object} container
+   * @param {number} page
+   * @returns {object}
    */
   ebr_image_reader_single.updateScrollByPage = function(container, page) {
     var pos_y = ((page - 1) * parameters.params.page_height) >> 0;
@@ -79,8 +79,8 @@
    *
    * @method zoom
    * @version 0.1.0
-   * @param {String} type
-   * @returns {Object}
+   * @param {string} type
+   * @returns {object}
    */
   ebr_image_reader_single.zoom = function(type) {
     // @todo implementit
@@ -110,9 +110,9 @@
    *
    * @method scale
    * @version 0.1.0
-   * @param {Object} $el
-   * @param {Number} zoom
-   * @returns {Object}
+   * @param {object} $el
+   * @param {number} zoom
+   * @returns {object}
    */
   ebr_image_reader_single.scale = function($el, zoom) {
     $el.set('style', {
@@ -127,26 +127,12 @@
   };
 
   /**
-   * thumbnails.
-   *
-   * @method thumbnails
-   * @version 0.1.0
-   * @param {String} type
-   * @returns {Object}
-   */
-  ebr_image_reader_single.thumbnails = function(type) {
-    // @todo implement it
-
-    return this;
-  };
-
-  /**
    * Rotate an image.
    *
    * @method turn
    * @version 0.1.0
-   * @param {String} type
-   * @returns {Object}
+   * @param {string} type
+   * @returns {object}
    */
   ebr_image_reader_single.turn = function(type) {
     console.time('EBookReader.image_reader.single.turn ' + type);
@@ -181,8 +167,8 @@
    *
    * @method getPageByScroll
    * @version 0.1.0
-   * @param {Object} container
-   * @returns {Number} page number
+   * @param {object} container
+   * @returns {number} page number
    */
   ebr_image_reader_single.getPageByScroll = function(container) {
     return ((container.scrollTop / parameters.params.page_height) >> 0) + 1;
@@ -194,9 +180,9 @@
    * @private
    * @method createPage_
    * @version 0.1.0
-   * @param {Object} img_obj
-   * @param {Number} img_num
-   * @returns {Object}
+   * @param {object} img_obj
+   * @param {number} img_num
+   * @returns {object}
    */
   ebr_image_reader_single.createPage_ = function(img_obj, img_num) {
     var img_wrapper = JEZ.dom('figure').create({
@@ -219,9 +205,9 @@
    *
    * @method calculateImageSize
    * @version 0.1.0
-   * @param {Object} img
-   * @param {Number} img_index
-   * @returns {Object}
+   * @param {object} img
+   * @param {number} img_index
+   * @returns {object}
    */
   ebr_image_reader_single.calculateImageSize = function(img, img_index) {
     var single = parameters.options.screen_mode_params.single,
@@ -270,7 +256,7 @@
    *
    * @method recalculateSizes
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_image_reader_single.recalculateSizes = function() {
     // @todo implement it
@@ -291,7 +277,7 @@
     parameters.params.page_height = sizes.height;
 
     JEZ.dom(this.page_view).set('style', {
-      'height': (win.innerHeight - this.toolbar.clientHeight - 1) + 'px'
+      'height': (global.innerHeight - this.toolbar.clientHeight - 1) + 'px'
     });
 
     $sm_container.set('style', {
@@ -314,9 +300,9 @@
    *
    * @method getSizesAutofit_
    * @version 0.1.0
-   * @param {String} autofit
-   * @param {String} type
-   * @returns {Object}
+   * @param {string} autofit
+   * @param {string} type
+   * @returns {object}
    */
   ebr_image_reader_single.getSizesAutofit_ = function(autofit, type) {
     var single = parameters.consts.SINGLE_MODE,
@@ -358,7 +344,7 @@
    *
    * @method loadImage
    * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_image_reader_single.loadImage = function() {
     var img_index = this.getImageIndex(),
@@ -437,8 +423,8 @@
    *
    * @method getImageIndex
    * @version 0.1.0
-   * @param {Number} page_num
-   * @returns {Number}
+   * @param {number} page_num
+   * @returns {number}
    */
   ebr_image_reader_single.getImageIndex = function(page_num) {
     var page = page_num || parameters.params.current_page;

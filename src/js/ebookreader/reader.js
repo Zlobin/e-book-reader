@@ -1,11 +1,11 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-(function(win, undef) {
+(function(global, undef) {
   'use strict';
 
-  var EBR = win.EBookReader,
-      JEZ = win.JEZ,
-      parameters = win.EBRParams,
+  var EBR = global.EBookReader,
+      JEZ = global.JEZ,
+      parameters = global.EBRParams,
       ebr_reader,
       ebr_screen_mode,
       ebr_screen_mode_single,
@@ -37,8 +37,8 @@
    *
    * @private
    * @method setSettings_
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.setSettings_ = function() {
     var opts = parameters.options;
@@ -76,8 +76,8 @@
    *
    * @private
    * @method setLocale_
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.setLocale_ = function() {
     JEZ.dom('html')
@@ -92,11 +92,11 @@
    *
    * @private
    * @method parseURLHash_
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.parseURLHash_ = function() {
-    var win_hash = win.location.hash,
+    var win_hash = global.location.hash,
         param_value,
         url_params,
         param_name,
@@ -197,13 +197,13 @@
    * Update URL Hash.
    *
    * @method updateURLHash
-   * @version 0.1.0   
-   * @param {Array} params
-   * @param {String} type
-   * @returns {Object}
+   * @param {array} params
+   * @param {string} type
+   * @returns {object}
+   * @version 0.1.0
    */
   ebr_reader.updateURLHash = function(params, type) {
-    var win_hash = win.location.hash,
+    var win_hash = global.location.hash,
         new_hash,
         reg_exp,
         consts = parameters.consts;
@@ -211,14 +211,14 @@
     type = type || consts.TYPE_FULLREPLACE;
 
     if (type === consts.TYPE_FULLREPLACE) {
-      win.location.hash = params.join('/');
+      global.location.hash = params.join('/');
     } else if (type === consts.TYPE_PARTLYREPLACE) {
       reg_exp = new RegExp('\/' + params.name + '\/\\w+\/', 'i');
 
       if (win_hash !== '') {
         new_hash = win_hash.replace(reg_exp, '/' + params.name + '/' + params.value + '/');
         if (new_hash !== win_hash) {
-          win.location.hash = new_hash;
+          global.location.hash = new_hash;
         }
       }
     }
@@ -238,8 +238,8 @@
    *
    * @private
    * @method setupDNSPrefetch_
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.setupDNSPrefetch_ = function() {
     // <meta http-equiv="x-dns-prefetch-control" content="on">
@@ -264,8 +264,7 @@
    * Go to first page.
    *
    * @method firstPage
-   * @version 0.1.0
-   * @returns {Object}
+   * @returns {object}
    */
   ebr_reader.firstPage = function() {
     this.gotoPage(1);
@@ -275,9 +274,10 @@
   /**
    * Enable or disable invert.
    *
+   * @abstract
    * @method invert
+   * @param {string} status
    * @version 0.1.0
-   * @param {String} status
    */
   ebr_reader.invert = JEZ.noop; // enabled || disabled
 
@@ -285,8 +285,8 @@
    * Go to last page.
    *
    * @method lastPage
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.lastPage = function() {
     this.gotoPage(parameters.params.number_pages);
@@ -297,8 +297,8 @@
    * Go to next page.
    *
    * @method nextPage
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.nextPage = function() {
     this.gotoPage(parameters.params.current_page + 1);
@@ -309,8 +309,8 @@
    * Go to previous page.
    *
    * @method previousPage
+   * @returns {object}
    * @version 0.1.0
-   * @returns {Object}
    */
   ebr_reader.previousPage = function() {
     this.gotoPage(parameters.params.current_page - 1);
@@ -320,10 +320,11 @@
   /**
    * Go to page.
    *
+   * @abstract
    * @method gotoPage
+   * @param {number} page_num
+   * @returns {object}
    * @version 0.1.0
-   * @param {Number} page_num
-   * @returns {Object}
    */
   ebr_reader.gotoPage = JEZ.noop;
 
@@ -333,7 +334,6 @@
    * Screen Mode Interface.
    *
    * @interface
-   * @version 0.1.0
    **/
   EBR.Reader.ScreenMode = JEZ.noop;
 
@@ -342,24 +342,27 @@
   /**
    * Zoom page.
    *
+   * @abstract
    * @method zoom
+   * @param {string} type
    * @version 0.1.0
-   * @param {String} type
    */
   ebr_screen_mode.zoom = JEZ.noop; // in || out
 
   /**
    * Turn page.
    *
+   * @abstract
    * @method turn
+   * @param {string} type
    * @version 0.1.0
-   * @param {String} type
    */
   ebr_screen_mode.turn = JEZ.noop; // left || right
 
   /**
    * Load page.
    *
+   * @abstract
    * @method loadPage
    * @version 0.1.0
    */
@@ -372,8 +375,8 @@
    *
    * @abstract
    * @class
-   * @version 0.1.0
    * @implements EBookReader.Reader.ScreenMode
+   * @version 0.1.0
    **/
   EBR.Reader.ScreenMode.Single = JEZ.noop;
 
@@ -383,19 +386,21 @@
   /**
    * Show or hide Table of Content.
    *
+   * @abstract
    * @method TOC
+   * @param {string} status
    * @version 0.1.0
-   * @param {String} status
    */
   ebr_screen_mode_single.thumbnails = JEZ.noop; // enabled || disabled
 
   /**
    * Show or hide Table of Content.
    *
+   * @abstract
    * @method updateScrollByPage
+   * @param {object} container
+   * @param {number} page
    * @version 0.1.0
-   * @param {Object} container
-   * @param {Number} page
    */
   ebr_screen_mode_single.updateScrollByPage = JEZ.noop;
 
@@ -406,8 +411,8 @@
    *
    * @abstract
    * @class
-   * @version 0.1.0
    * @implements EBookReader.Reader.ScreenMode
+   * @version 0.1.0
    **/
   EBR.Reader.ScreenMode.Dual = JEZ.noop;
 
@@ -417,6 +422,7 @@
   /**
    * Leaf on the left.
    *
+   * @abstract
    * @method leafLeft
    * @version 0.1.0
    */
@@ -425,6 +431,7 @@
   /**
    * Leaf on the right.
    *
+   * @abstract
    * @method leafRight
    * @version 0.1.0
    */

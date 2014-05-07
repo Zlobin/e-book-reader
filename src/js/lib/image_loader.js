@@ -1,7 +1,10 @@
 /* jslint bitwise: true, nomen: true, plusplus: true, white: true, indent: 2, maxlen: 120 */
 
-// Asynchronous loading of images
-var ImageLoader = (function(win, JEZ, undef) {
+/* Asynchronous loading of images
+ * 
+ * @class
+ */
+var ImageLoader = (function(global, JEZ, undef) {
   'use strict';
 
   return function(img_src, onComplete, onError, onProgress) {
@@ -56,7 +59,7 @@ var ImageLoader = (function(win, JEZ, undef) {
       return {
         'start': function() {
           xhr.send();
-          win.setTimeout(function () {
+          global.setTimeout(function () {
             if (xhr.readyState === 3) {
               xhr.abort();
             }
@@ -88,7 +91,7 @@ var ImageLoader = (function(win, JEZ, undef) {
             .on('load', function(event) {
               var el = event.target;
 
-              win.URL.revokeObjectURL(img_src);
+              global.URL.revokeObjectURL(img_src);
               if ((el.naturalWidth === undef || el.naturalWidth === 0) || !el.complete) {
                 onErrorImg(event);
               } else {

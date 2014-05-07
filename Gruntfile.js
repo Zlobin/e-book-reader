@@ -179,15 +179,13 @@ module.exports = function(grunt) {
         ]
       }
     },
-    grock: {
-      options: {
-        github: false,
-        index: 'Gruntfile.js',
-        out: 'docs/',
-        style: 'thin',
-        verbose: true
-      },
-      files: ['<%= dest %>']
+    jsdoc: {
+      dist: {
+        src: ['<%= dest %>'], 
+        options: {
+          destination: 'docs'
+        }
+      }
     }
   });
 
@@ -205,6 +203,6 @@ module.exports = function(grunt) {
     'concat:css',
     'replace:css_path',
     'cssmin',
-    'grock'
+    'jsdoc'
   ]);
 };

@@ -1,8 +1,6 @@
 // English localization for eBookReader
-(function(win) {
+(function(JEZ_locale) {
   'use strict';
-
-  var JEZ_locale = win.JEZ_locale || [];
 
   JEZ_locale['en-us'] = {
     'Single Page': 'Single Page',
@@ -32,6 +30,4 @@
     'Loading. Please wait': 'Loading. Please wait...',
     'Printout': 'Printout'
   };
-
-  win.JEZ_locale = JEZ_locale;
-}(this));
+}(this.JEZ_locale || []));
