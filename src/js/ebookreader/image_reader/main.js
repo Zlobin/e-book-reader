@@ -831,7 +831,7 @@
             '  </label>',
             '  <label for="EBR_print_range">',
             '    <' + print_page + ' value="range" id="EBR_print_range">',
-            '    ' + __('from') + ' ',
+            '    ' + __('Pages from') + ' ',
             '  </label>',
             '  <' + print_range + 'name="EBR_print_from" id="EBR_print_from" value="' + params.current_page + '">',
             '  ' + __('to') + ' ',

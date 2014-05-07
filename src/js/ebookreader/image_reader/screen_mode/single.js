@@ -68,8 +68,7 @@
     var pos_y = ((page - 1) * parameters.params.page_height) >> 0;
 
     container.scrollTop = pos_y;
-    JEZ.dom(container)
-        .data('disable_scroll', true);
+    JEZ.dom(container).data('disable_scroll', true);
 
     return this;
   };

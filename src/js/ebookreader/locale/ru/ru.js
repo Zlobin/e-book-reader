@@ -21,7 +21,7 @@
     'Printing options': 'Опции печати',
     'All pages': 'Все страницы',
     'Current page': 'Текущая страница',
-    'from': 'с',
+    'Pages from': 'Страницы с',
     'to': 'по',
     'Paper size': 'Размер бумаги',
     'A4': 'A4',

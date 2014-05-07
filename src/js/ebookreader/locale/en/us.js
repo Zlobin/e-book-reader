@@ -21,7 +21,7 @@
     'Printing options': 'Printing options',
     'All pages': 'All pages',
     'Current page': 'Current page',
-    'from': 'from',
+    'Pages from': 'Pages from',
     'to': 'to',
     'Paper size': 'Paper size',
     'A4': 'A4',
