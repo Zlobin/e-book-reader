@@ -214,7 +214,7 @@ var ImageLoader = (function(global, JEZ, undef) {
 
 /**
  * eBookReader
- * Updated: "2014-05-07T07:23:21.885Z"
+ * Updated: "2014-05-07T07:43:07.017Z"
  * @author Eugene Zlobin http://zlobin.pro/
  * @version 0.1.0
  */
@@ -2362,7 +2362,10 @@ var ImageLoader = (function(global, JEZ, undef) {
       '-moz-transform': 'scale(' + zoom + ')',
       '-ms-transform': 'scale(' + zoom + ')',
       '-o-transform': 'scale(' + zoom + ')',
-      'transform': 'scale(' + zoom + ')'
+      'transform': 'scale(' + zoom + ')',
+      '-webkit-transform-origin': 'left top',
+      '-ms-transform-origin': 'left top',
+      'transform-origin': 'left top'
     });
 
     return this;

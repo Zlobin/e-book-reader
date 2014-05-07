@@ -360,9 +360,9 @@ p {
        -o-transform: rotate(90deg);
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
   /* Fix positions */
-  -webkit-transform-origin: bottom left; /* Chrome, Safari, Opera */
-      -ms-transform-origin: bottom left; /* IE 9 */
-          transform-origin: bottom left;
+  -webkit-transform-origin: left bottom; /* Chrome, Safari, Opera */
+      -ms-transform-origin: left bottom; /* IE 9 */
+          transform-origin: left bottom;
 }
 
 
@@ -381,9 +381,9 @@ p {
        -o-transform: rotate(270deg);
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
   /* Fix positions */
-  -webkit-transform-origin: top left; /* Chrome, Safari, Opera */
-      -ms-transform-origin: top left; /* IE 9 */
-          transform-origin: top left;
+  -webkit-transform-origin: left top; /* Chrome, Safari, Opera */
+      -ms-transform-origin: left top; /* IE 9 */
+          transform-origin: left top;
 }
 
 /* ------ Print ------ */

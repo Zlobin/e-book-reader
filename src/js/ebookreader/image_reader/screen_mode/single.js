@@ -120,7 +120,10 @@
       '-moz-transform': 'scale(' + zoom + ')',
       '-ms-transform': 'scale(' + zoom + ')',
       '-o-transform': 'scale(' + zoom + ')',
-      'transform': 'scale(' + zoom + ')'
+      'transform': 'scale(' + zoom + ')',
+      '-webkit-transform-origin': 'left top',
+      '-ms-transform-origin': 'left top',
+      'transform-origin': 'left top'
     });
 
     return this;

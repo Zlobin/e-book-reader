@@ -202,7 +202,7 @@ module.exports = function(grunt) {
     'uglify:full',
     'concat:css',
     'replace:css_path',
-    'cssmin',
-    'jsdoc'
+    'cssmin'
+    // 'jsdoc'
   ]);
 };
