@@ -67,7 +67,10 @@
   ebr_image_reader_single.updateScrollByPage = function(container, page) {
     var pos_y = ((page - 1) * parameters.params.page_height) >> 0;
 
-    container.scrollTop = pos_y;
+    global.setTimeout(function() {
+      container.scrollTop = pos_y;    
+    }, 100);
+
     JEZ.dom(container).data('disable_scroll', true);
 
     return this;

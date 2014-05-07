@@ -630,7 +630,7 @@ var ImageLoader = (function(global, JEZ, undef) {
     'Printing options': 'Printing options',
     'All pages': 'All pages',
     'Current page': 'Current page',
-    'from': 'from',
+    'Pages from': 'Pages from',
     'to': 'to',
     'Paper size': 'Paper size',
     'A4': 'A4',
@@ -664,7 +664,7 @@ var ImageLoader = (function(global, JEZ, undef) {
     'Printing options': 'Опции печати',
     'All pages': 'Все страницы',
     'Current page': 'Текущая страница',
-    'from': 'с',
+    'Pages from': 'Страницы с',
     'to': 'по',
     'Paper size': 'Размер бумаги',
     'A4': 'A4',
@@ -1385,6 +1385,14 @@ var ImageLoader = (function(global, JEZ, undef) {
 
     if (JEZ.is_mobile) {
       this.addMobileFeatures_();
+    }
+    
+    if (params.enable_thumbnails) {
+      this.showThumbnails_();
+    }
+
+    if (params.print_popup) {
+      this.print('on');
     }
   };
 
@@ -2136,7 +2144,7 @@ var ImageLoader = (function(global, JEZ, undef) {
             '  </label>',
             '  <label for="EBR_print_range">',
             '    <' + print_page + ' value="range" id="EBR_print_range">',
-            '    ' + __('from') + ' ',
+            '    ' + __('Pages from') + ' ',
             '  </label>',
             '  <' + print_range + 'name="EBR_print_from" id="EBR_print_from" value="' + params.current_page + '">',
             '  ' + __('to') + ' ',
@@ -2774,9 +2782,11 @@ var ImageLoader = (function(global, JEZ, undef) {
   ebr_image_reader_single.updateScrollByPage = function(container, page) {
     var pos_y = ((page - 1) * parameters.params.page_height) >> 0;
 
-    container.scrollTop = pos_y;
-    JEZ.dom(container)
-        .data('disable_scroll', true);
+    global.setTimeout(function() {
+      container.scrollTop = pos_y;    
+    }, 100);
+
+    JEZ.dom(container).data('disable_scroll', true);
 
     return this;
   };
