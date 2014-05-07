@@ -224,7 +224,7 @@
         left;
 
     for (padding_name in single.padding) {
-      if (JEZ.hop.call(single.padding, padding_name)) {
+      if (Object.prototype.hasOwnProperty.call(single.padding, padding_name)) {
         paddings.push(single.padding[padding_name] + 'px');
       }
     }

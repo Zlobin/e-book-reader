@@ -436,7 +436,7 @@
         };
 
     for (button in buttons) {
-      if (JEZ.hop.call(buttons, button)) {
+      if (Object.prototype.hasOwnProperty.call(buttons, button)) {
         if (buttons[button].enable !== false) {
           current_button = JEZ.dom('button').create({
             'id': 'EBR_button_' + button,
@@ -461,7 +461,7 @@
     }
 
     for (toolbar_button in toolbar_buttons) {
-      if (JEZ.hop.call(toolbar_buttons, toolbar_button)) {
+      if (Object.prototype.hasOwnProperty.call(toolbar_buttons, toolbar_button)) {
         $buttons_wrapper.append(toolbar_buttons[toolbar_button]);
       }
     }
@@ -486,7 +486,7 @@
         $button = JEZ.dom(button);
 
     for (event_name in events) {
-      if (JEZ.hop.call(events, event_name)) {
+      if (Object.prototype.hasOwnProperty.call(events, event_name)) {
         $button.on(event_name, events[event_name], this);
       }
     }
@@ -504,8 +504,9 @@
    * @returns {object}
    **/
   ebr_image_reader.thumbnailsBlock = function(status) {
-    status === 'on' ? this.showThumbnails_() : this.hideThumbnails_();
+    var method = status === 'on' ? 'show' : 'hide';
 
+    this[method + 'Thumbnails_']();
     parameters.params.enable_thumbnails = !parameters.params.enable_thumbnails;
     this.updateURLHash({
       'name': 'thumbnails',
@@ -1315,7 +1316,7 @@
 
     // Change color depending on the light.
     // @see {@link http://www.w3.org/TR/ambient-light/|W3.org}
-    JEZ.dom(win).on('devicelight', function(event) {
+    JEZ.dom(global).on('devicelight', function(event) {
       var $el = JEZ.dom(this.wrapper),
           lux = event.value;
 
